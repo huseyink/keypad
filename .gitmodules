@@ -1,0 +1,3 @@
+[submodule "lwbtn"]
+	path = lwbtn
+	url = https://github.com/MaJerle/lwbtn.git
