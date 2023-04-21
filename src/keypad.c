@@ -54,7 +54,6 @@ static void keypad_key_callback_handler(struct lwbtn* lwobj, struct lwbtn_btn* b
 	if(evt == LWBTN_EVT_ONRELEASE) {
 		keypad->key_event_callback(keypad, keypad->keymap[btn_idx]);		
 	}
-	
 }
 
 static uint8_t keypad_get_key_state(struct lwbtn* lwobj, struct lwbtn_btn* btn)
@@ -112,10 +111,4 @@ void keypad_scan(keypad_t* keypad, uint32_t ms_u32)
 		// set pin to high impedance input, Effectively ends row pulse.
 		keypad->key_gpio_drv.io_set_input(&key_gpio);
 	}
-	
 }
- 
- 
- 
- 
- 
