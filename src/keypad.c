@@ -37,7 +37,6 @@
 static void keypad_key_callback_handler(struct lwbtn* lwobj, struct lwbtn_btn* btn, lwbtn_evt_t evt);
 static uint8_t keypad_get_key_state(struct lwbtn* lwobj, struct lwbtn_btn* btn);
 
-
 static void keypad_key_callback_handler(struct lwbtn* lwobj, struct lwbtn_btn* btn, lwbtn_evt_t evt)
 {
 	(void)lwobj;
@@ -52,6 +51,7 @@ static void keypad_key_callback_handler(struct lwbtn* lwobj, struct lwbtn_btn* b
 	}
 	
 	if(evt == LWBTN_EVT_ONRELEASE) {
+		keypad->pressed_key = (char)keypad->keymap[btn_idx];
 		keypad->key_event_callback(keypad, keypad->keymap[btn_idx]);		
 	}
 }
@@ -72,19 +72,24 @@ static uint8_t keypad_get_key_state(struct lwbtn* lwobj, struct lwbtn_btn* btn)
 	return keypad->key_gpio_drv.io_read(&keypad->key_gpio_column[btn_idx % 4]);
 }
  
-void keypad_init(keypad_t* keypad, keypad_btn_t* keypad_btn, uint8_t row_cnt, uint8_t column_cnt, fptr_key_event_callback callback)
+uint8_t keypad_init(keypad_t* keypad, keypad_btn_t* keypad_btn, uint8_t row_cnt, uint8_t column_cnt, fptr_key_event_callback callback)
 {
-	keypad->row_cnt = row_cnt;
-	keypad->column_cnt = column_cnt;
-	keypad->keypad_btn = keypad_btn;
-	keypad->key_event_callback = callback;
-	
-	// set button arg as column gpio port and pin.
-	for(uint8_t i = 0; i < row_cnt * column_cnt; i++) {
-		keypad->keypad_btn->keypad_buttons[i].arg = keypad;
+	if(keypad != NULL)
+	{
+	  keypad->row_cnt = row_cnt;
+	  keypad->column_cnt = column_cnt;
+	  keypad->keypad_btn = keypad_btn;
+	  keypad->key_event_callback = callback;
+	  
+	  // assign keypad instance as arg to call event callback.
+	  for(uint8_t i = 0; i < row_cnt * column_cnt; i++) {
+	  	keypad->keypad_btn->keypad_buttons[i].arg = keypad;
+	  }
+	  
+	  return lwbtn_init_ex(keypad_btn->h_keypad_btn, keypad_btn->keypad_buttons, row_cnt * column_cnt, keypad_get_key_state, keypad_key_callback_handler);	
 	}
-	
-	lwbtn_init_ex(keypad_btn->h_keypad_btn, keypad_btn->keypad_buttons, row_cnt * column_cnt, keypad_get_key_state, keypad_key_callback_handler);
+
+	return 0;
 }
 
 void keypad_scan(keypad_t* keypad, uint32_t ms_u32)
@@ -111,4 +116,9 @@ void keypad_scan(keypad_t* keypad, uint32_t ms_u32)
 		// set pin to high impedance input, Effectively ends row pulse.
 		keypad->key_gpio_drv.io_set_input(&key_gpio);
 	}
+}
+
+char keypad_get_pressed_key(keypad_t* keypad)
+{
+	return keypad->pressed_key;
 }
