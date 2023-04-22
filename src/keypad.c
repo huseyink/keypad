@@ -37,6 +37,17 @@
 static void keypad_key_callback_handler(struct lwbtn* lwobj, struct lwbtn_btn* btn, lwbtn_evt_t evt);
 static uint8_t keypad_get_key_state(struct lwbtn* lwobj, struct lwbtn_btn* btn);
 
+/**
+ * @brief Key press callback handler for a keypad button
+ *
+ * This function is called when a keypad button is pressed and released.
+ *
+ * @param lwobj     A pointer to the lwbtn object that triggered the event
+ * @param btn       A pointer to the button that triggered the event
+ * @param evt       The event that occurred
+ *
+ * @return void
+ */
 static void keypad_key_callback_handler(struct lwbtn* lwobj, struct lwbtn_btn* btn, lwbtn_evt_t evt)
 {
 	(void)lwobj;
@@ -56,6 +67,15 @@ static void keypad_key_callback_handler(struct lwbtn* lwobj, struct lwbtn_btn* b
 	}
 }
 
+/**
+ * @brief Reads the state of a button in the keypad.
+ *        This is a wrapper callback function to read GPIO status.
+ * 
+ * @param lwobj Pointer to the lightweight button object.
+ * @param btn Pointer to the button object in the keypad.
+ * 
+ * @return uint8_t 1 if the button is pressed, 0 otherwise.
+ */
 static uint8_t keypad_get_key_state(struct lwbtn* lwobj, struct lwbtn_btn* btn)
 {
 	(void)lwobj;
@@ -72,6 +92,17 @@ static uint8_t keypad_get_key_state(struct lwbtn* lwobj, struct lwbtn_btn* btn)
 	return keypad->key_gpio_drv.io_read(&keypad->key_gpio_column[btn_idx % 4]);
 }
  
+/**
+ * @brief Initializes a keypad with the specified properties and assigns a key event callback.
+ *
+ * @param keypad Pointer to a keypad_t struct.
+ * @param keypad_btn Pointer to a keypad_btn_t struct.
+ * @param row_cnt Number of rows on the keypad.
+ * @param column_cnt Number of columns on the keypad.
+ * @param callback Function pointer to the key event callback.
+ *
+ * @return Returns 1 if initialization was successful, 0 otherwise.
+ */
 uint8_t keypad_init(keypad_t* keypad, keypad_btn_t* keypad_btn, uint8_t row_cnt, uint8_t column_cnt, fptr_key_event_callback callback)
 {
 	if(keypad != NULL)
@@ -92,6 +123,14 @@ uint8_t keypad_init(keypad_t* keypad, keypad_btn_t* keypad_btn, uint8_t row_cnt,
 	return 0;
 }
 
+/**
+ * @brief Processes the input for a keypad object.
+ *
+ * @param rotary A pointer to the keypad object to scan for input.
+ * @param ms_time The amount of time in milliseconds since the last scan.
+ * 
+ * @return void
+ */
 void keypad_scan(keypad_t* keypad, uint32_t ms_u32)
 {
 	for(uint8_t row = 0; row < keypad->row_cnt; row++)
@@ -118,6 +157,13 @@ void keypad_scan(keypad_t* keypad, uint32_t ms_u32)
 	}
 }
 
+/**
+ * @brief Returns the currently pressed key on the keypad.
+ * 
+ * @param keypad Pointer to the keypad_t structure
+ * 
+ * @return Currently pressed key on the keypad
+ */
 char keypad_get_pressed_key(keypad_t* keypad)
 {
 	return keypad->pressed_key;
