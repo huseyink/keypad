@@ -85,6 +85,7 @@ typedef struct keypad{
 uint8_t keypad_init(keypad_t* keypad, keypad_btn_t* keypad_btn, uint8_t row_cnt, uint8_t column_cnt, fptr_key_event_callback callback);
 void    keypad_scan(keypad_t* keypad, uint32_t ms_time);
 char    keypad_get_pressed_key(keypad_t* keypad);
+
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */

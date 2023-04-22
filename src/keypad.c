@@ -42,9 +42,9 @@ static uint8_t keypad_get_key_state(struct lwbtn* lwobj, struct lwbtn_btn* btn);
  *
  * This function is called when a keypad button is pressed and released.
  *
- * @param lwobj     A pointer to the lwbtn object that triggered the event
- * @param btn       A pointer to the button that triggered the event
- * @param evt       The event that occurred
+ * @param lwobj  Pointer to the lightweight button object.
+ * @param btn    Pointer to the button object in the keypad.
+ * @param evt    The event that occurred
  *
  * @return void
  */
@@ -72,7 +72,7 @@ static void keypad_key_callback_handler(struct lwbtn* lwobj, struct lwbtn_btn* b
  *        This is a wrapper callback function to read GPIO status.
  * 
  * @param lwobj Pointer to the lightweight button object.
- * @param btn Pointer to the button object in the keypad.
+ * @param btn   Pointer to the button object in the keypad.
  * 
  * @return uint8_t 1 if the button is pressed, 0 otherwise.
  */
@@ -95,11 +95,11 @@ static uint8_t keypad_get_key_state(struct lwbtn* lwobj, struct lwbtn_btn* btn)
 /**
  * @brief Initializes a keypad with the specified properties and assigns a key event callback.
  *
- * @param keypad Pointer to a keypad_t struct.
+ * @param keypad     Pointer to a keypad_t struct.
  * @param keypad_btn Pointer to a keypad_btn_t struct.
- * @param row_cnt Number of rows on the keypad.
+ * @param row_cnt    Number of rows on the keypad.
  * @param column_cnt Number of columns on the keypad.
- * @param callback Function pointer to the key event callback.
+ * @param callback   Function pointer to the key event callback.
  *
  * @return Returns 1 if initialization was successful, 0 otherwise.
  */
@@ -126,7 +126,7 @@ uint8_t keypad_init(keypad_t* keypad, keypad_btn_t* keypad_btn, uint8_t row_cnt,
 /**
  * @brief Processes the input for a keypad object.
  *
- * @param rotary A pointer to the keypad object to scan for input.
+ * @param keypad  Pointer to a keypad_t struct.
  * @param ms_time The amount of time in milliseconds since the last scan.
  * 
  * @return void
@@ -149,7 +149,7 @@ void keypad_scan(keypad_t* keypad, uint32_t ms_u32)
 			lwbtn_process_btn_ex(keypad->keypad_btn->h_keypad_btn, &keypad->keypad_btn->keypad_buttons[(row * keypad->column_cnt) + column], ms_u32);
 		}
 		
-		// set row pin output as SET
+		// set row pin output as RESET
 		keypad->key_gpio_drv.io_write(&key_gpio, 0);
 		
 		// set pin to high impedance input, Effectively ends row pulse.
@@ -160,7 +160,7 @@ void keypad_scan(keypad_t* keypad, uint32_t ms_u32)
 /**
  * @brief Returns the currently pressed key on the keypad.
  * 
- * @param keypad Pointer to the keypad_t structure
+ * @param keypad Pointer to a keypad_t struct.
  * 
  * @return Currently pressed key on the keypad
  */
